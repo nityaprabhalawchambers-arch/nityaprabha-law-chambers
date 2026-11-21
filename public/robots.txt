@@ -1,0 +1,7 @@
+# Robots.txt for Nityaprabha Law Chambers
+User-agent: *
+Allow: /
+Disallow: /api/
+
+# Sitemaps
+Sitemap: https://nityaprabhalawchambers.com/sitemap.xml

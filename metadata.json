@@ -1,0 +1,6 @@
+{
+  "name": "Nityaprabha Law Chambers",
+  "description": "Premium full-service Indian law chambers specializing in corporate law, litigation, family disputes, and intellectual property prosecution under the BCI rules.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
