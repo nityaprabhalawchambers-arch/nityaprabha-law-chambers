@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import {
   Scale, Shield, Award, Users, BookOpen, Clock, Calendar, Check, ArrowRight,
   ArrowUpRight, ExternalLink, ChevronRight, HelpCircle, MessageSquare, AlertCircle, Sparkles, Phone, Mail,
-  Globe, Gavel, Download, CheckCircle2
+  Globe, Gavel, Download, CheckCircle2, ChevronDown
 } from 'lucide-react';
 import {
   PRACTICE_AREAS, METRICS, CLIENT_LOGOS, INDUSTRIES_SERVED, PROCESS_TIMELINE,
@@ -28,6 +28,7 @@ export default function Home({
 }: HomeProps) {
   const [activeGroup, setActiveGroup] = useState<string>('all');
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+  const [showAllPracticesMobile, setShowAllPracticesMobile] = useState<boolean>(false);
 
   const handlePracticeClick = (id: string) => {
     setActivePage('practices');
@@ -51,16 +52,16 @@ export default function Home({
   return (
     <div className="bg-[#030712] text-[#BABDC0] overflow-hidden">
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden pt-32 pb-24 md:pt-40 md:pb-32">
-        {/* Editorial Architectural Background & Vignette */}
+      <section className="relative overflow-hidden pt-28 pb-16 md:pt-40 md:pb-32">
+        {/* Editorial Architectural Background & Vignette (Properly Visible & Dignified) */}
         <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=80&w=1920"
+            src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&q=85&w=1920"
             alt="Supreme Court and Classical Law Library Hall"
-            className="w-full h-full object-cover object-center opacity-18 filter grayscale contrast-125 scale-105"
+            className="w-full h-full object-cover object-center opacity-35 sm:opacity-25 filter contrast-110 brightness-95 scale-105"
           />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#030712] via-[#030712]/92 to-[#030712]/80" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-transparent to-[#030712]/90" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#030712]/95 via-[#030712]/82 to-[#030712]/60 sm:to-[#030712]/75" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-transparent to-[#030712]/80" />
         </div>
 
         {/* Subtle Background Art / Gradients */}
@@ -216,21 +217,14 @@ export default function Home({
         </div>
       </section>
 
-      {/* 2. STATUTORY COMPLIANCE & RISK DIAGNOSTICS CONSOLE (NEW TOP 1% FEATURE) */}
-      <section className="py-16 border-t border-gold/20 bg-[#050A16] relative">
+      {/* 2. PRACTICE AREAS SECTION */}
+      <section className="py-14 md:py-24 border-t border-gold/20 bg-deep-bg relative">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-          <StatutoryDiagnostics onOpenConsultation={onOpenConsultation} />
-        </div>
-      </section>
-
-      {/* 3. PRACTICE AREAS SECTION */}
-      <section className="py-24 border-t border-gold/20 bg-deep-bg relative">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="text-center space-y-4 mb-16">
+          <div className="text-center space-y-4 mb-8 md:mb-16">
             <span className="font-mono text-[10px] uppercase tracking-widest text-gold font-bold">
               Full-Spectrum Legal Services
             </span>
-            <h2 className="font-display text-3xl font-extrabold gold-gradient-text sm:text-4xl uppercase tracking-wide">
+            <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-extrabold gold-gradient-text uppercase tracking-wide">
               16 Specialized Legal Disciplines
             </h2>
             <p className="max-w-2xl mx-auto text-xs leading-relaxed text-[#BABDC0] font-sans">
@@ -238,12 +232,12 @@ export default function Home({
             </p>
 
             {/* Filter Tabs */}
-            <div className="flex flex-wrap justify-center gap-2 pt-6">
+            <div className="flex flex-wrap justify-center gap-2 pt-4 sm:pt-6">
               {groups.map((grp) => (
                 <button
                   key={grp.id}
                   onClick={() => setActiveGroup(grp.id)}
-                  className={`rounded-xl px-4 py-2 font-mono text-[10px] uppercase tracking-widest transition-all duration-300 cursor-pointer ${
+                  className={`rounded-xl px-3.5 sm:px-4 py-2 font-mono text-[10px] uppercase tracking-widest transition-all duration-300 cursor-pointer ${
                     activeGroup === grp.id
                       ? 'bg-gradient-to-r from-gold-light via-gold to-gold-dark text-deep-bg font-bold shadow-md shadow-gold/20'
                       : 'border border-gold/20 glass-card text-[#BABDC0] hover:text-white hover:border-gold/50'
@@ -256,60 +250,74 @@ export default function Home({
           </div>
 
           {/* Cards Grid */}
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {filteredPractices.map((p) => (
+          <div className="grid grid-cols-1 gap-5 sm:gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {filteredPractices.map((p, idx) => (
               <div
                 key={p.id}
                 onClick={() => handlePracticeClick(p.id)}
-                className="group relative flex flex-col justify-between rounded-2xl glass-card glass-card-hover p-6 shadow-xl cursor-pointer overflow-hidden border border-gold/20 min-h-[290px]"
+                className={`group relative flex flex-col justify-between rounded-2xl glass-card glass-card-hover shadow-xl cursor-pointer overflow-hidden border border-gold/20 transition-all duration-300 ${
+                  !showAllPracticesMobile && activeGroup === 'all' && idx >= 4 ? 'hidden sm:flex' : 'flex'
+                }`}
               >
-                {/* Thematic Practice Background Image */}
+                {/* Dedicated Practice Photo Header (Visually Crisp & Distinct) */}
                 {p.image && (
-                  <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                  <div className="relative h-32 w-full overflow-hidden bg-black/60 shrink-0">
                     <img
                       src={p.image}
                       alt={p.title}
                       loading="lazy"
-                      className="w-full h-full object-cover object-center opacity-18 filter grayscale contrast-125 group-hover:scale-110 group-hover:opacity-30 group-hover:grayscale-0 transition-all duration-700 ease-out"
+                      className="w-full h-full object-cover object-center filter brightness-90 contrast-110 group-hover:scale-105 transition-transform duration-700"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/85 to-[#030712]/45" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#070B14] via-transparent to-black/25" />
+                    <div className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded bg-black/75 backdrop-blur-md border border-gold/30 text-[9px] font-mono uppercase tracking-wider text-gold font-bold">
+                      Rule 36
+                    </div>
+                    <div className="absolute bottom-2.5 left-3 flex h-8 w-8 items-center justify-center rounded-lg bg-black/85 border border-gold/40 text-gold shadow-md backdrop-blur-md">
+                      <Scale className="h-4 w-4" />
+                    </div>
                   </div>
                 )}
 
-                <div className="space-y-4 relative z-10">
-                  <div className="flex items-center justify-between">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-black/50 border border-gold/30 text-gold group-hover:text-deep-bg group-hover:bg-gradient-to-r group-hover:from-gold-light group-hover:to-gold-dark group-hover:border-transparent transition-all duration-350 shadow-md backdrop-blur-sm">
-                      <Scale className="h-5 w-5" />
-                    </div>
-                    <span className="text-[9px] font-mono uppercase tracking-wider text-gold/80 px-2 py-0.5 rounded bg-black/50 border border-gold/20">
-                      Rule 36
-                    </span>
+                <div className="p-5 flex flex-col justify-between flex-grow space-y-3">
+                  <div>
+                    <h3 className="font-display text-sm font-bold text-white tracking-wide uppercase group-hover:text-gold transition-colors">
+                      {p.title}
+                    </h3>
+                    <p className="text-xs leading-relaxed text-[#BABDC0] line-clamp-2 font-sans mt-1">
+                      {p.shortDesc}
+                    </p>
+
+                    {/* Forum Tag */}
+                    {p.forums && p.forums.length > 0 && (
+                      <div className="pt-2">
+                        <span className="text-[9px] font-mono text-gold/80 block line-clamp-1">
+                          Forum: {p.forums[0]}
+                        </span>
+                      </div>
+                    )}
                   </div>
 
-                  <h3 className="font-display text-sm font-bold text-white tracking-wide uppercase group-hover:text-gold transition-colors">
-                    {p.title}
-                  </h3>
-                  <p className="text-xs leading-relaxed text-[#BABDC0] line-clamp-3 font-sans">
-                    {p.shortDesc}
-                  </p>
-
-                  {/* Forum Tag */}
-                  {p.forums && p.forums.length > 0 && (
-                    <div className="pt-2">
-                      <span className="text-[9px] font-mono text-gold/80 block line-clamp-1">
-                        Forum: {p.forums[0]}
-                      </span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-6 flex items-center text-[10px] font-mono uppercase tracking-widest text-gold group-hover:text-white transition-colors relative z-10">
-                  View Statutory Roadmap
-                  <ChevronRight className="ml-1 h-3.5 w-3.5 transform group-hover:translate-x-1.5 transition-transform" />
+                  <div className="pt-2 flex items-center text-[10px] font-mono uppercase tracking-widest text-gold group-hover:text-white transition-colors">
+                    View Statutory Roadmap
+                    <ChevronRight className="ml-1 h-3.5 w-3.5 transform group-hover:translate-x-1.5 transition-transform" />
+                  </div>
                 </div>
               </div>
             ))}
           </div>
+
+          {/* Mobile "Show All 16 Disciplines" Toggle */}
+          {activeGroup === 'all' && filteredPractices.length > 4 && (
+            <div className="sm:hidden mt-6 text-center">
+              <button
+                onClick={() => setShowAllPracticesMobile(!showAllPracticesMobile)}
+                className="w-full flex items-center justify-center space-x-2 rounded-xl border border-gold/40 bg-gold/10 py-3.5 px-4 font-mono text-xs uppercase tracking-wider text-gold hover:bg-gold/20 transition cursor-pointer"
+              >
+                <span>{showAllPracticesMobile ? 'Show Fewer Disciplines' : `View All ${filteredPractices.length} Practice Disciplines`}</span>
+                <ChevronDown className={`h-4 w-4 transform transition-transform ${showAllPracticesMobile ? 'rotate-180' : ''}`} />
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -341,7 +349,7 @@ export default function Home({
                         <img
                           src={cap.image}
                           alt={cap.title}
-                          className="w-full h-full object-cover opacity-15 filter grayscale group-hover:scale-105 group-hover:opacity-25 transition-all duration-500"
+                          className="w-full h-full object-cover opacity-35 filter brightness-85 contrast-110 group-hover:scale-105 group-hover:opacity-50 transition-all duration-500"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/85 to-transparent" />
                       </div>
@@ -428,7 +436,7 @@ export default function Home({
                   <img
                     src={hub.image}
                     alt={hub.city}
-                    className="absolute inset-0 w-full h-full object-cover filter brightness-70 group-hover:scale-110 transition-transform duration-700"
+                    className="absolute inset-0 w-full h-full object-cover filter brightness-90 contrast-110 group-hover:scale-110 transition-transform duration-700"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/60 to-transparent" />
                   <div className="relative z-10 space-y-1">
@@ -515,14 +523,14 @@ export default function Home({
 
       {/* 6. PARTNERS & LEADERSHIP PROFILE SECTION */}
       <section className="py-24 relative border-t border-gold/15 bg-gradient-to-b from-[#030712] via-[#050A16] to-[#030712] overflow-hidden">
-        {/* Chambers Law Library Background */}
-        <div className="pointer-events-none absolute inset-0 z-0 opacity-12 overflow-hidden">
+        {/* Chambers Law Library Background (Warm & Dignified Archival View) */}
+        <div className="pointer-events-none absolute inset-0 z-0 opacity-30 sm:opacity-22 overflow-hidden">
           <img
-            src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=80&w=1920"
+            src="https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&q=85&w=1920"
             alt="Law Library & Archival Statutes"
-            className="w-full h-full object-cover object-center filter grayscale contrast-125"
+            className="w-full h-full object-cover object-center filter contrast-110 brightness-95"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#030712] via-transparent to-[#030712]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#030712] via-[#030712]/70 to-[#030712]" />
         </div>
 
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10 font-sans">
@@ -797,9 +805,9 @@ export default function Home({
                     <img
                       src={industryImages[idx % industryImages.length]}
                       alt={ind.name}
-                      className="w-full h-full object-cover filter grayscale contrast-125 opacity-15 group-hover:scale-110 group-hover:opacity-25 transition-all duration-500"
+                      className="w-full h-full object-cover filter brightness-90 contrast-110 opacity-40 group-hover:scale-110 group-hover:opacity-60 transition-all duration-500"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/80 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#030712] via-[#030712]/75 to-transparent" />
                   </div>
                   <div className="relative z-10 space-y-2">
                     <h4 className="font-display text-xs font-bold text-white uppercase tracking-wider group-hover:text-gold transition-colors">
@@ -866,7 +874,15 @@ export default function Home({
         </div>
       </section>
 
-      {/* 11. PRIVILEGED INTAKE & CONTACT CTA BLOCK */}
+      {/* 11. STATUTORY COMPLIANCE & RISK DIAGNOSTICS */}
+      <section className="py-16 sm:py-20 border-t border-gold/20 bg-gradient-to-b from-[#030712] via-[#050B18] to-[#030712] relative">
+        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-[600px] w-[600px] rounded-full bg-gold/5 blur-[140px]" />
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
+          <StatutoryDiagnostics onOpenConsultation={onOpenConsultation} />
+        </div>
+      </section>
+
+      {/* 12. PRIVILEGED INTAKE & CONTACT CTA BLOCK */}
       <section className="py-20 border-t border-gold/20 bg-gradient-to-b from-[#030712] via-[#080E1C] to-[#030712]">
         <div className="mx-auto max-w-5xl px-4 sm:px-6">
           <div className="rounded-3xl glass-panel p-8 md:p-12 relative overflow-hidden shadow-2xl gold-border-glow gold-flare-top">
